@@ -28,7 +28,6 @@ Contributions
 
 Licence
 
-## 🔎 Aperçu
 ## ✨ Fonctionnalités principales
 
 Affichage d’une grille personnalisable.
