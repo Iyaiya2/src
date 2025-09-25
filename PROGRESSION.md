@@ -3,8 +3,8 @@
 ## Paliers Atteints
 
 - [x] **Palier 1** : Affichage et Bases
-- [x] **Palier 2** : Interactions
-- [] **Palier 3** : Placement des Navires
+- [ ] **Palier 2** : Interactions
+- [ ] **Palier 3** : Placement des Navires
 - [ ] **Palier 4** : Configuration (Non atteint)
 - [ ] **Palier 5** : Deux Joueurs (Non atteint)
 
