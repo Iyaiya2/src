@@ -7,9 +7,13 @@ Le but est de placer ses navires sur une grille et de tenter de couler ceux de l
 ## Le projet a été conçu étape par étape afin d’explorer plusieurs notions clés en programmation C :
 
 gestion de l’affichage,
+
 saisie et validation utilisateur,
+
 manipulation de structures de données,
+
 lecture de fichiers de configuration,
+
 gestion d’un mode deux joueurs.
 
 ## 📚 Table des Matières
