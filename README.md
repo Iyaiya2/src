@@ -16,17 +16,6 @@ lecture de fichiers de configuration,
 
 gestion d’un mode deux joueurs.
 
-##  Table des Matières
-
-Aperçu
-
-Installation
-
-Utilisation
-
-Contributions
-
-Licence
 
 ##  Fonctionnalités principales
 
