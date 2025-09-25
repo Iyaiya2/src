@@ -1,4 +1,4 @@
-# Progression BattleChip - Groupe X
+# Progression BattleChip - Groupe 30
 
 ## Paliers Atteints
 
