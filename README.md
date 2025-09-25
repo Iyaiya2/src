@@ -24,9 +24,15 @@ Licence
 ## ✨ Fonctionnalités principales
 
 Affichage d’une grille personnalisable.
+
 Placement des navires : manuel ou aléatoire.
+
 Attaques interactives avec validation des coordonnées.
+
 Détection des navires coulés et condition de victoire automatique.
+
 Mode deux joueurs en tour par tour avec séparation de l’écran.
+
 Support d’un fichier config.txt pour modifier la taille de la grille et le nombre de navires.
+
 Interface console avec couleurs ANSI (touché en rouge, raté en bleu, navires en vert).
