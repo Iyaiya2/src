@@ -1,0 +1,406 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// === Structures de base (From Block 1 & 2) ===
+typedef struct Position {
+    int x;
+    int y;
+} Position;
+
+typedef enum BoatOrientation {
+    BOAT_HORIZONTAL,
+    BOAT_VERTICAL
+} BoatOrientation;
+
+typedef struct Boat {
+    Position position;
+    int length;
+    int orientation;
+    int hit;
+    int sunk;
+} Boat;
+
+typedef struct {
+    char **board_template;
+    int board_lines;
+    int board_columns;
+}Board;
+
+void printf_board(Board *board)
+{
+    // Function logic copied exactly from Block 1.
+    // This creates and prints a board, then frees it,
+    // and does NOT save it to the Board *board pointer.
+    Board board1 = {
+        .board_template = NULL,
+        .board_lines = 0,
+        .board_columns = 0
+    };
+
+
+    printf("Veuillez entrer le nombre de lignes du plateau : ");
+    fflush(stdin);
+    scanf("%d", &(board1.board_lines));
+
+    while(board1.board_lines > 26 )
+    {
+        printf("Veuillez recommencez !");
+
+        printf("Veuillez entrer le nombre de lignes du plateau : ");
+        fflush(stdin);
+        scanf("%d", &(board1.board_lines));
+    }
+
+    board1.board_columns = board1.board_lines;
+
+    // Allocation for the dynamically sized board (boardL)
+    char **boardL = malloc(sizeof(char*) * (board1.board_lines + 1));
+
+    for(int i = 0; i < board1.board_lines+1; i++)
+    {
+        boardL[i] = malloc(sizeof(char) * (board1.board_columns + 1));
+
+        for(int j = 0; j < board1.board_columns+1; j++)
+        {
+            if(i == 0 && j == 0){
+                boardL[i][j] = ' ';
+                printf("%c\t", boardL[i][j]);
+            }
+            else if(j == 0 && i > 0)
+            {
+                boardL[i][1] = 1; // Note: This line seems incorrect in original code (setting value 1 to char)
+                printf("%d\t", i);
+            }
+            else if(i == 0 && j > 0)
+            {
+                boardL[0][j] = 'A'+ (j-1);
+                printf("%c\t", boardL[0][j]);
+            }
+            else
+            {
+                boardL[i][j] = '.';
+                printf("%c\t", boardL[i][j]);
+            }
+        }
+
+        printf("\n");
+        printf("\n");
+    }
+
+    // Deallocation of the dynamically sized board
+    for(int i = 0; i < board1.board_lines; i++)
+    {
+        free(boardL[i]);
+    }
+
+    free(boardL);
+}
+
+// === place_ships function (From Block 2 - fixed 10x10 logic) ===
+
+// The original signature and body of place_ships are kept intact as requested,
+// using fixed char board[10][10] and boundary checks against 10.
+void place_ships(char board[10][10] ) {
+    int i, j;
+
+    // Initialisation de la grille
+    for (i = 0; i < 10; i++) {
+        for (j = 0; j < 10; j++) {
+            board[i][j] = '.';
+
+        }
+    }
+
+    // --- Variables de Saisie ---
+    char col_char;
+    int row_num;
+    int orientation_input;
+    int length;
+    int start_x, start_y;
+    int valid_placement = 0;
+
+
+    // --- 1. Porte-avions (5 cases) ---
+    length = 5;
+    do {
+        printf("\n--- Placement du Porte-avions (Taille 5, 'P') ---\n");
+        printf("Position de depart (Colonne/Ligne) : ");
+        if (scanf(" %c%d", &col_char, &row_num) != 2) {
+            printf("Erreur de format. Reessayez.\n");
+            while(getchar() != '\n');
+            continue;
+        }
+        printf("Orientation (0 pour Horizontal, 1 pour Vertical) : ");
+        if (scanf("%d", &orientation_input) != 1) {
+            printf("Erreur de format. Reessayez.\n");
+            while(getchar() != '\n');
+            continue;
+        }
+
+        // Conversion simple (SANS toupper)
+        start_x = row_num - 1;
+        start_y = col_char - 'A';
+
+        // VÉRIFICATION DES LIMITES
+        valid_placement = 1;
+
+        if (start_x < 0 || start_x >= 10 || start_y < 0 || start_y >= 10) {
+            valid_placement = 0;
+        } else if (orientation_input == BOAT_HORIZONTAL) {
+            if (start_y + length > 10) {
+                valid_placement = 0;
+            }
+        } else { // BOAT_VERTICAL
+            if (start_x + length > 10) {
+                valid_placement = 0;
+            }
+        }
+
+        if (!valid_placement) {
+            printf("**Bordures depassees**. Veuillez choisir un nouvel emplacement.\n");
+        }
+    } while (!valid_placement);
+
+    // Placement si valide
+    for (int k = 0; k < length; k++) {
+        if (orientation_input == BOAT_HORIZONTAL) {
+            board[start_x][start_y + k] = 'P';
+        } else {
+             board[start_x + k][start_y] = 'P';
+        }
+    }
+    printf("Placement termine.\n");
+
+
+    // --- 2. Croiseur (4 cases) ---
+    length = 4;
+    do {
+        printf("\n--- Placement du Croiseur (Taille 4, 'C') ---\n");
+        printf("Position de depart (Colonne/Ligne) : ");
+        if (scanf(" %c%d", &col_char, &row_num) != 2) {
+            printf("Erreur de format. Reessayez.\n");
+            while(getchar() != '\n');
+            continue;
+        }
+        printf("Orientation (0 pour Horizontal, 1 pour Vertical) : ");
+        if (scanf("%d", &orientation_input) != 1) {
+            printf("Erreur de format. Reessayez.\n");
+            while(getchar() != '\n');
+            continue;
+        }
+
+        start_x = row_num - 1;
+        start_y = col_char - 'A';
+
+        // VÉRIFICATION DES LIMITES
+        valid_placement = 1;
+
+        if (start_x < 0 || start_x >= 10 || start_y < 0 || start_y >= 10) {
+            valid_placement = 0;
+        } else if (orientation_input == BOAT_HORIZONTAL) {
+            if (start_y + length > 10) {
+                valid_placement = 0;
+            }
+        } else {
+            if (start_x + length > 10) {
+                valid_placement = 0;
+            }
+        }
+
+        if (!valid_placement) {
+            printf("**Bordures depassees**. Veuillez choisir un nouvel emplacement.\n");
+        }
+    } while (!valid_placement);
+
+    // Placement
+    for (int k = 0; k < length; k++) {
+        if (orientation_input == BOAT_HORIZONTAL) {
+             board[start_x][start_y + k] = 'C';
+        } else {
+             board[start_x + k][start_y] = 'C';
+        }
+    }
+    printf("Placement termine.\n");
+
+
+    // --- 3. Destroyer 1 (3 cases) ---
+    length = 3;
+    do {
+        printf("\n--- Placement du Destroyer 1 (Taille 3, 'D') ---\n");
+        printf("Position de depart (Colonne/Ligne) : ");
+        if (scanf(" %c%d", &col_char, &row_num) != 2) {
+            printf("Erreur de format. Reessayez.\n");
+            while(getchar() != '\n');
+            continue;
+        }
+        printf("Orientation (0 pour Horizontal, 1 pour Vertical) : ");
+        if (scanf("%d", &orientation_input) != 1) {
+            printf("Erreur de format. Reessayez.\n");
+            while(getchar() != '\n');
+            continue;
+        }
+
+        start_x = row_num - 1;
+        start_y = col_char - 'A';
+
+        // VÉRIFICATION DES LIMITES
+        valid_placement = 1;
+
+        if (start_x < 0 || start_x >= 10 || start_y < 0 || start_y >= 10) {
+            valid_placement = 0;
+        } else if (orientation_input == BOAT_HORIZONTAL) {
+            if (start_y + length > 10) {
+                valid_placement = 0;
+            }
+        } else {
+            if (start_x + length > 10) {
+                valid_placement = 0;
+            }
+        }
+
+        if (!valid_placement) {
+            printf("**Bordures depassees**. Veuillez choisir un nouvel emplacement.\n");
+        }
+    } while (!valid_placement);
+
+    // Placement
+    for (int k = 0; k < length; k++) {
+        if (orientation_input == BOAT_HORIZONTAL) {
+             board[start_x][start_y + k] = 'D';
+        } else {
+             board[start_x + k][start_y] = 'D';
+        }
+    }
+    printf("Placement termine.\n");
+
+
+    // --- 4. Destroyer 2 (3 cases) ---
+    length = 3;
+    do {
+        printf("\n--- Placement du Destroyer 2 (Taille 3, 'D') ---\n");
+        printf("Position de depart (Colonne/Ligne) : ");
+        if (scanf(" %c%d", &col_char, &row_num) != 2) {
+            printf("Erreur de format. Reessayez.\n");
+            while(getchar() != '\n');
+            continue;
+        }
+        printf("Orientation (0 pour Horizontal, 1 pour Vertical) : ");
+        if (scanf("%d", &orientation_input) != 1) {
+            printf("Erreur de format. Reessayez.\n");
+            while(getchar() != '\n');
+            continue;
+        }
+
+        start_x = row_num - 1;
+        start_y = col_char - 'A';
+
+        // VÉRIFICATION DES LIMITES
+        valid_placement = 1;
+
+        if (start_x < 0 || start_x >= 10 || start_y < 0 || start_y >= 10) {
+            valid_placement = 0;
+        } else if (orientation_input == BOAT_HORIZONTAL) {
+            if (start_y + length > 10) {
+                valid_placement = 0;
+            }
+        } else {
+            if (start_x + length > 10) {
+                valid_placement = 0;
+            }
+        }
+
+        if (!valid_placement) {
+            printf("**Bordures depassees**. Veuillez choisir un nouvel emplacement.\n");
+        }
+    } while (!valid_placement);
+
+    // Placement
+    for (int k = 0; k < length; k++) {
+        if (orientation_input == BOAT_HORIZONTAL) {
+             board[start_x][start_y + k] = 'D';
+        } else {
+             board[start_x + k][start_y] = 'D';
+        }
+    }
+    printf("Placement termine.\n");
+
+
+    // --- 5. Torpilleur (2 cases) ---
+    length = 2;
+    do {
+        printf("\n--- Placement du Torpilleur (Taille 2, 'T') ---\n");
+        printf("Position de depart (Colonne/Ligne) : ");
+        if (scanf(" %c%d", &col_char, &row_num) != 2) {
+            printf("Erreur de format. Reessayez.\n");
+            while(getchar() != '\n');
+            continue;
+        }
+        printf("Orientation (0 pour Horizontal, 1 pour Vertical) : ");
+        if (scanf("%d", &orientation_input) != 1) {
+            printf("Erreur de format. Reessayez.\n");
+            while(getchar() != '\n');
+            continue;
+        }
+
+        start_x = row_num - 1;
+        start_y = col_char - 'A';
+
+        // VÉRIFICATION DES LIMITES
+        valid_placement = 1;
+
+        if (start_x < 0 || start_x >= 10 || start_y < 0 || start_y >= 10) {
+            valid_placement = 0;
+        } else if (orientation_input == BOAT_HORIZONTAL) {
+            if (start_y + length > 10) {
+                valid_placement = 0;
+            }
+        } else {
+            if (start_x + length > 10) {
+                valid_placement = 0;
+            }
+        }
+
+        if (!valid_placement) {
+            printf("**Bordures depassees**. Veuillez choisir un nouvel emplacement.\n");
+        }
+    } while (!valid_placement);
+
+    // Placement
+    for (int k = 0; k < length; k++) {
+        if (orientation_input == BOAT_HORIZONTAL) {
+             board[start_x][start_y + k] = 'T';
+        } else {
+             board[start_x + k][start_y] = 'T';
+        }
+    }
+    printf("Placement termine.\n");
+}
+
+
+int main(void) {
+
+    // Board 2 definition from Block 1 main
+    Board board2;
+
+    // Block 1 execution: Prompts for size, prints empty board, but destroys the board data.
+    printf_board(&board2);
+
+    // Block 2 main logic: Defines a *new*, fixed 10x10 board, places ships on it, and prints it.
+    // This part runs independently from the dynamic board printed above.
+    char board[10][10];
+
+    place_ships(board);
+
+    int i, j;
+    printf("\n  A B C D E F G H I J\n");
+    for (i = 0; i < 10; i++) {
+        printf("%2d ", i + 1);
+        for (j = 0; j < 10; j++) {
+            printf("%c ", board[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
