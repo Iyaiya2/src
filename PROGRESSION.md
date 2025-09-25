@@ -10,7 +10,7 @@
 
 ## Bonus Implémentés
 
-- [x] Interface colorée
+- [ ] Interface colorée
 - [ ] Mode réseau
 
 ## Répartition du Travail
