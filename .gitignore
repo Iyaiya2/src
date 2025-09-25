@@ -1,0 +1,29 @@
+# --- Build outputs ---
+/build/
+*.exe
+*.o
+*.out
+*.obj
+*.dll
+*.so
+*.a
+*.lib
+
+# --- CMake generated files ---
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+Makefile
+
+# --- Logs and temp ---
+*.log
+*.tmp
+
+# --- VSCode ---
+.vscode/
+*.code-workspace
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
