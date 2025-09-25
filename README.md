@@ -16,7 +16,7 @@ lecture de fichiers de configuration,
 
 gestion d’un mode deux joueurs.
 
-## 📚 Table des Matières
+##  Table des Matières
 
 Aperçu
 
@@ -28,7 +28,7 @@ Contributions
 
 Licence
 
-## ✨ Fonctionnalités principales
+##  Fonctionnalités principales
 
 Affichage d’une grille personnalisable.
 
