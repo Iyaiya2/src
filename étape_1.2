@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+// === Structures de base ===
 typedef struct Position {
     int x;
     int y;
@@ -10,64 +11,102 @@ typedef enum BoatOrientation {
     BOAT_VERTICAL
 } BoatOrientation;
 
-typedef struct Boat {
-    Position position;
-    int length;
-    int orientation;
-} Boat;
+// Vérifie si un bateau peut être placé (ni dépassement, ni contact)
+int can_place_ship(char board[10][10], int start_x, int start_y, int length, int orientation) {
+    for (int k = 0; k < length; k++) {
+        int x = start_x + (orientation == BOAT_VERTICAL ? k : 0);
+        int y = start_y + (orientation == BOAT_HORIZONTAL ? k : 0);
 
-void init_board(char board[10][10]) {
-    int i, j;
-    for (i = 0; i < 10; i++) {
-        for (j = 0; j < 10; j++) {
+        // Vérifie les limites
+        if (x < 0 || x >= 10 || y < 0 || y >= 10)
+            return 0;
+
+        // Vérifie si la case ou ses voisines sont déjà occupées
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                int nx = x + dx;
+                int ny = y + dy;
+                if (nx >= 0 && nx < 10 && ny >= 0 && ny < 10) {
+                    if (board[nx][ny] != '.') {
+                        return 0; // Bateau trop proche
+                    }
+                }
+            }
+        }
+    }
+    return 1;
+}
+
+// Place un bateau après vérification
+void place_ship(char board[10][10], int length, char symbol) {
+    char col_char;
+    int row_num;
+    int orientation_input;
+    int start_x, start_y;
+    int valid_placement;
+
+    do {
+        printf("\n--- Placement du %c (taille %d) ---\n", symbol, length);
+        printf("Position de depart (Colonne/Ligne) : ");
+        if (scanf(" %c%d", &col_char, &row_num) != 2) {
+            printf("Erreur de format. Reessayez.\n");
+            while (getchar() != '\n');
+            continue;
+        }
+        printf("Orientation (0 = Horizontal, 1 = Vertical) : ");
+        if (scanf("%d", &orientation_input) != 1) {
+            printf("Erreur de format. Reessayez.\n");
+            while (getchar() != '\n');
+            continue;
+        }
+
+        start_x = row_num - 1;
+        start_y = col_char - 'A';
+
+        valid_placement = can_place_ship(board, start_x, start_y, length, orientation_input);
+
+        if (!valid_placement) {
+            printf("**Placement invalide (collision ou depassement). Reessayez.**\n");
+        }
+
+    } while (!valid_placement);
+
+    // Placement effectif
+    for (int k = 0; k < length; k++) {
+        int x = start_x + (orientation_input == BOAT_VERTICAL ? k : 0);
+        int y = start_y + (orientation_input == BOAT_HORIZONTAL ? k : 0);
+        board[x][y] = symbol;
+    }
+}
+
+// === Main ===
+int main() {
+    char board[10][10];
+
+    // Initialisation du plateau
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
             board[i][j] = '.';
         }
     }
-}
 
-void place_boat(char board[10][10], int length, char symbole) {
-    int x, y;
-    char dir;
+    // Placement de la flotte
+    place_ship(board, 5, 'P'); // Porte-avions
+    place_ship(board, 4, 'C'); // Croiseur
+    place_ship(board, 3, 'D'); // Destroyer 1
+    place_ship(board, 3, 'd'); // Destroyer 2
+    place_ship(board, 2, 'T'); // Torpilleur
 
-    printf("Entrez la position de depart (x y) du bateau de taille %d : ", length);
-    scanf("%d %d", &x, &y);
-    printf("Orientation (H pour horizontal, V pour vertical) : ");
-    scanf(" %c", &dir);
-
-    int i;
-    if (dir == 'H' || dir == 'h') {
-        for (i = 0; i < length; i++) {
-            board[y][x + i] = symbole;
-        }
-    } else if (dir == 'V' || dir == 'v') {
-        for (i = 0; i < length; i++) {
-            board[y + i][x] = symbole;
-        }
-    }
-}
-
-void afficherGrille(char board[10][10]) {
-    int i, j;
-    printf("    A B C D E F G H I J\n");
-    for (i = 0; i < 10; i++) {
+    // Affichage final
+    printf("\n  A B C D E F G H I J\n");
+    for (int i = 0; i < 10; i++) {
         printf("%2d ", i + 1);
-        for (j = 0; j < 10; j++) {
+        for (int j = 0; j < 10; j++) {
             printf("%c ", board[i][j]);
         }
         printf("\n");
     }
-}
-
-int main() {
-    char board[10][10];
-    init_board(board);
-
-    place_boat(board, 5, 'P');// Port avion
-    place_boat(board, 4, 'C');// croiseur
-    place_boat(board, 3, 'D'); // destroyeur
-    place_boat(board, 2, 'T'); // torpilleur
-
-    afficherGrille(board);
 
     return 0;
 }
+
