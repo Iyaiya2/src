@@ -1,16 +1,16 @@
-# Progression BattleChip - Groupe X
+# Progression BattleChip - Groupe 30
 
 ## Paliers Atteints
 
 - [x] **Palier 1** : Affichage et Bases
-- [x] **Palier 2** : Interactions
-- [] **Palier 3** : Placement des Navires
+- [ ] **Palier 2** : Interactions
+- [ ] **Palier 3** : Placement des Navires
 - [ ] **Palier 4** : Configuration (Non atteint)
 - [ ] **Palier 5** : Deux Joueurs (Non atteint)
 
 ## Bonus Implémentés
 
-- [x] Interface colorée
+- [ ] Interface colorée
 - [ ] Mode réseau
 
 ## Répartition du Travail
